@@ -14,28 +14,40 @@ class particle {
     this.x = x;
     this.y = y;
     this.c = c;
-    this.vy = 0;
-    this.vx = 0;
+    this.vy = Math.random() * 2 - 1;
+    this.vx = Math.random() * 2 - 1;
   }
   draw() {
     circle(this.x, this.y, 10, this.c);
   }
-  update() {
+  update(particles) {
+    for (let i = 0; i < particles.length; i++) {
+      console.log('evaluating');
+      let other = particles[i];
+      let fx, fy, dx, dy, f, d;
+
+      dx = this.x - other.x;
+      dy = this.y - other.y;
+      d = Math.sqrt(dy * dy + dx * dx);
+      f = (0.1 * -1) / d;
+      fx += f * dx;
+      fy += f * dy;
+      this.vx += fx;
+      this.vy += fy;
+    }
     this.x += this.vx;
     this.y += this.vy;
-    this.vy = 0;
-    this.vx = 0;
     if (this.x < 0) {
-      this.x = 0;
-    }
-    if (this.x > width) {
       this.x = width;
     }
+    if (this.x > width) {
+      this.x = 0;
+    }
     if (this.y < 0) {
-      this.y = 0;
+      this.y = height;
     }
     if (this.y > height) {
-      this.y = height;
+      this.y = 0;
     }
   }
 }
@@ -55,10 +67,6 @@ class rule {
     fy += f * dy;
     current.vx += fx;
     current.vy += fy;
-    if (this.ct == other.c) {
-      other.vx -= fx;
-      other.vy -= fy;
-    }
   }
   update(particles) {
     var current;
@@ -80,7 +88,7 @@ class rule {
   }
 }
 const rule1 = new rule('white', 0.01, 'white');
-for (let i = 0; i < 60; i++) {
+for (let i = 0; i < 10; i++) {
   particles.push(
     new particle(Math.random() * width, Math.random() * height, 'white')
   );
@@ -90,11 +98,11 @@ function animate() {
   canvas.height = height;
   canvas.width = width;
   // ctx.clearRect(0, 0, width, height);
-  rule1.update(particles);
+  // rule1.update(particles);
   console.log('stuff');
   for (let i = 0; i < particles.length; i++) {
     particles[i].draw();
-    particles[i].update();
+    particles[i].update(particles);
   }
   requestAnimationFrame(animate);
 }
