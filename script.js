@@ -22,18 +22,19 @@ class particle {
   }
   update(particles) {
     for (let i = 0; i < particles.length; i++) {
-      console.log('evaluating');
       let other = particles[i];
       let fx, fy, dx, dy, f, d;
 
       dx = this.x - other.x;
       dy = this.y - other.y;
       d = Math.sqrt(dy * dy + dx * dx);
-      f = (0.1 * -1) / d;
-      fx += f * dx;
-      fy += f * dy;
-      this.vx += fx;
-      this.vy += fy;
+      if (d > MinRange && d < MaxRange) {
+        f = (0.1 * -1) / d;
+        fx += f * dx;
+        fy += f * dy;
+        this.vx += fx;
+        this.vy += fy;
+      }
     }
     this.x += this.vx;
     this.y += this.vy;
